@@ -1,13 +1,12 @@
 #ifndef GRAPH_OPERATIONS_H
 #define GRAPH_OPERATIONS_H
+#define NEWLINE "\n"
 
-#include <iostream>
-#include <vector>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-void connected_components(vector<vector<int>> *graph, int N);
+void connected_components(unordered_map<int,vector<int>*>*graph, int N);
 void one_cycle();
 void shortest_paths();
 

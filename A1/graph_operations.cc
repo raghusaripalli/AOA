@@ -1,8 +1,6 @@
 #include "graph_operations.h"
 
-using namespace std;
-
-void DFS(vector<vector<int>> *graph, bool *visited, int v)
+void DFS(unordered_map<int,vector<int>*>* graph, bool *visited, int v)
 {
     // mark node 'v' as visited
     visited[v] = true;
@@ -10,14 +8,14 @@ void DFS(vector<vector<int>> *graph, bool *visited, int v)
     
     // Iterate through all the nodes connected to 'v'
     vector<int>::iterator i;
-    for (i = (*graph)[v].begin(); i != (*graph)[v].end(); ++i)
+    for (i = (*graph)[v]->begin(); i != (*graph)[v]->end(); ++i)
         if (!visited[*i])
             DFS(graph, visited, *i);
 }
 
-void connected_components(vector<vector<int>> *graph, int N)
+void connected_components(unordered_map<int,vector<int>*>* graph, int N)
 {
-    // Create and initializa visited arr to false
+    // Create and initialize visited arr to false
     bool *visited = new bool[N];
     for (int i = 0; i < N; i++)
         visited[i] = false;
@@ -27,7 +25,7 @@ void connected_components(vector<vector<int>> *graph, int N)
         if (!visited[i])
         {
             DFS(graph, visited, i);
-            cout << endl;
+            cout << NEWLINE;
         }
     }
     // free visited array
