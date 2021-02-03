@@ -1,43 +1,83 @@
 #include "graph_operations.h"
 
-void DFS(unordered_map<int,vector<int>*>* graph, bool *visited, int v)
+void Graph::DFS(unordered_set<int> *visited, int v)
 {
     // mark node 'v' as visited
-    visited[v] = true;
+    visited->insert(v);
     cout << v << " ";
-    
+
     // Iterate through all the nodes connected to 'v'
-    vector<int>::iterator i;
-    for (i = (*graph)[v]->begin(); i != (*graph)[v]->end(); ++i)
-        if (!visited[*i])
-            DFS(graph, visited, *i);
+    list<int>::iterator i;
+    for (i = (*adj)[v]->begin(); i != (*adj)[v]->end(); ++i)
+        if (visited->find(*i) == visited->end())
+            DFS(visited, *i);
 }
 
-void connected_components(unordered_map<int,vector<int>*>* graph, int N)
+bool Graph::isCyclic(unordered_set<int> *visited, int v, int parent)
 {
-    // Create and initialize visited arr to false
-    bool *visited = new bool[N];
-    for (int i = 0; i < N; i++)
-        visited[i] = false;
+    // mark node 'v' as visited
+    visited->insert(v);
 
-    for (int i = 0; i < N; i++)
+    // Iterate through all the nodes connected to 'v'
+    list<int>::iterator i;
+    for (i = (*adj)[v]->begin(); i != (*adj)[v]->end(); ++i)
     {
-        if (!visited[i])
+        if (visited->find(*i) == visited->end())
         {
-            DFS(graph, visited, i);
+            if (isCyclic(visited, *i, v))
+            {
+                return true;
+            }
+        }
+        else if (*i != parent)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Graph::connected_components()
+{
+    // Create visited set
+    unordered_set<int> *visited = new unordered_set<int>();
+
+    for (auto it = adj->begin(); it != adj->end(); ++it)
+    {
+        int i = it->first;
+        if (visited->find(i) == visited->end())
+        {
+            DFS(visited, i);
             cout << NEWLINE;
         }
     }
-    // free visited array
-    delete[] visited;
+    // free visited
+    delete visited;
 }
 
-void one_cycle()
+bool Graph::one_cycle()
 {
-    cout << "OC" << endl;
+    // Create visited set
+    unordered_set<int> *visited = new unordered_set<int>();
+
+    for (int i = 0; i < N; i++)
+    {
+        if (visited->find(i) == visited->end())
+        {
+            if (isCyclic(visited, i, -1))
+            {
+                return true;
+            }
+        }
+    }
+
+    // free visited
+    delete visited;
+
+    return false;
 }
 
-void shortest_paths()
+void Graph::shortest_paths()
 {
     cout << "SP" << endl;
 }

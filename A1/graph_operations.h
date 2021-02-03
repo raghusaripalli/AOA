@@ -6,8 +6,26 @@
 
 using namespace std;
 
-void connected_components(unordered_map<int,vector<int>*>*graph, int N);
-void one_cycle();
-void shortest_paths();
+class Graph
+{
+public:
+    unordered_map<int, list<int> *> *adj;
+    int N;
+    Graph(unordered_map<int, list<int> *> *g, int n)
+    {
+        adj = g;
+        N = n;
+    }
+    ~Graph()
+    {
+        delete[] adj;
+    }
+    void connected_components();
+    bool one_cycle();
+    void shortest_paths();
+
+    void DFS(unordered_set<int> *visited, int v);
+    bool isCyclic(unordered_set<int> *visited, int v, int parent);
+};
 
 #endif
