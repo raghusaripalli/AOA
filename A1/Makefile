@@ -1,4 +1,4 @@
-CC = g++ -O2 -Wall "-Wl,--stack=2073741824" -Wno-deprecated
+CC = g++ -O2 -Wall "-Wl,--stack=1073741824" -Wno-deprecated
 
 all: simulated_test
 

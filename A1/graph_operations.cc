@@ -81,3 +81,10 @@ void Graph::shortest_paths()
 {
     cout << "SP" << endl;
 }
+
+Graph::Graph(unordered_map<int, list<int> *> *g, int n)
+{
+    adj = g;
+    N = n;
+}
+Graph::~Graph() {}

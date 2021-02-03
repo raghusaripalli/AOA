@@ -21,16 +21,30 @@ unordered_map<int, list<int> *> *initializeGraph(int N)
     return graph;
 }
 
+void heap_neighbours(int *arr, int v, int N)
+{
+    int i = 0;
+    int a = (v - 1) / 2;
+    if (a >= 0 && a < N)
+        arr[i++] = a;
+    a = (2 * v) + 1;
+    if (a >= 0 && a < N)
+        arr[i++] = a;
+    a = (2 * v) - 1;
+    if (a >= 0 && a < N)
+        arr[i++] = a;
+}
+
 void start_time()
 {
     t = clock();
 }
 
-void end_and_display_time(string funcName)
+void end_and_display_time(string stage)
 {
     t = clock() - t;
     double time_taken = ((double)t) / CLOCKS_PER_SEC;
-    cout << "Executed '" << funcName << "' in " << time_taken << " secs." << NEWLINE;
+    cout << stage << " took " << time_taken << " secs." << NEWLINE;
 }
 
 // Graph Simulation Methods
@@ -59,28 +73,110 @@ unordered_map<int, list<int> *> *completeGraph(int N)
     return graph;
 }
 
+unordered_map<int, list<int> *> *emptyGraph(int N)
+{
+    unordered_map<int, list<int> *> *graph = initializeGraph(N);
+    for (int i = 0; i < N; i++)
+    {
+        graph->insert({i, new list<int>()});
+    }
+    return graph;
+}
+
+unordered_map<int, list<int> *> *heapGraph(int N)
+{
+    unordered_map<int, list<int> *> *graph = initializeGraph(N);
+    for (int i = 0; i < N; i++)
+    {
+        int arr[3];
+        heap_neighbours(arr, i, N);
+        for (int j = 0; j < 3; j++)
+            addEdge(graph, i, arr[j]);
+    }
+    return graph;
+}
+
 int main()
 {
+    // User Input
+    int N, graphChoice, algoChoice;
+    string fileName = "simulated_test_output.txt";
+    do
+    {
+        cout << "Select one of the following graphs to simulate:" << NEWLINE << endl;
+        cout << TAB << "1. N Cycle Graph" << NEWLINE;
+        cout << TAB << "2. Complete Graph" << NEWLINE;
+        cout << TAB << "3. Empty Graph" << NEWLINE;
+        cout << TAB << "4. Heap Graph" << NEWLINE << TAB;
+        cin >> graphChoice;
+    } while (graphChoice < 1 || graphChoice > 4);
+
+    cout << "Enter no of nodes in the graph: " << NEWLINE << TAB;
+    cin >> N;
+
+    do
+    {
+        cout << "Select one of the 3 algorithms to run on the above mentioned graph:" << NEWLINE << endl;
+        cout << TAB << "1. Connected Components" << NEWLINE;
+        cout << TAB << "2. One Cycle" << NEWLINE;
+        cout << TAB << "3. Shortest Paths" << NEWLINE << TAB;
+        cin >> algoChoice;
+    } while (algoChoice < 1 || algoChoice > 3);
+
+    cout << "Output written to the file: " << fileName << endl;
 
     // fast IO
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
     // redirect stdout to output.txt
-    freopen("simulated_test_output.txt", "w", stdout);
+    freopen(fileName.c_str(), "w", stdout);
 
     start_time();
-    int N = 480000;
-    unordered_map<int, list<int> *> *adj = completeGraph(N);
+    unordered_map<int, list<int> *> *adj;
+    switch (graphChoice)
+    {
+    case 1:
+        adj = nCycle(N);
+        break;
+    case 2:
+        adj = completeGraph(N);
+        break;
+    case 3:
+        adj = emptyGraph(N);
+        break;
+    case 4:
+        adj = heapGraph(N);
+        break;
+    default:
+        adj = nCycle(N);
+        break;
+    }
     end_and_display_time("Graph Simulation");
 
     // Create and Assign to Graph
     Graph graph(adj, N);
     start_time();
-    graph.connected_components();
-    end_and_display_time("Connected Components");
-
-    //graph.one_cycle();
-    graph.shortest_paths();
+    switch (algoChoice)
+    {
+    case 1:
+        graph.connected_components();
+        break;
+    case 2:
+        if (graph.one_cycle()) {
+            cout << "Cycle Found!" << NEWLINE;
+        }
+        else {
+            cout << "No Cycle" << NEWLINE;
+        }
+        break;
+    case 3:
+        graph.shortest_paths();
+        break;
+    default:
+        break;
+    }
+    end_and_display_time("Algorithm Execution");
+    cout << endl;
     return 0;
 }

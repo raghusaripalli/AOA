@@ -1,6 +1,7 @@
 #ifndef GRAPH_OPERATIONS_H
 #define GRAPH_OPERATIONS_H
 #define NEWLINE "\n"
+#define TAB "\t"
 
 #include <bits/stdc++.h>
 
@@ -11,15 +12,8 @@ class Graph
 public:
     unordered_map<int, list<int> *> *adj;
     int N;
-    Graph(unordered_map<int, list<int> *> *g, int n)
-    {
-        adj = g;
-        N = n;
-    }
-    ~Graph()
-    {
-        delete[] adj;
-    }
+    Graph(unordered_map<int, list<int> *> *g, int n);
+    ~Graph();
     void connected_components();
     bool one_cycle();
     void shortest_paths();
