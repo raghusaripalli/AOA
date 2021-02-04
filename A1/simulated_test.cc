@@ -21,20 +21,6 @@ unordered_map<int, list<int> *> *initializeGraph(int N)
     return graph;
 }
 
-void heap_neighbours(int *arr, int v, int N)
-{
-    int i = 0;
-    int a = (v - 1) / 2;
-    if (a >= 0 && a < N)
-        arr[i++] = a;
-    a = (2 * v) + 1;
-    if (a >= 0 && a < N)
-        arr[i++] = a;
-    a = (2 * v) - 1;
-    if (a >= 0 && a < N)
-        arr[i++] = a;
-}
-
 void start_time()
 {
     t = clock();
@@ -56,7 +42,7 @@ unordered_map<int, list<int> *> *nCycle(int N)
     {
         addEdge(graph, i, i - 1);
     }
-    addEdge(graph, 0, N);
+    addEdge(graph, 0, N - 1);
     return graph;
 }
 
@@ -83,19 +69,6 @@ unordered_map<int, list<int> *> *emptyGraph(int N)
     return graph;
 }
 
-unordered_map<int, list<int> *> *heapGraph(int N)
-{
-    unordered_map<int, list<int> *> *graph = initializeGraph(N);
-    for (int i = 0; i < N; i++)
-    {
-        int arr[3];
-        heap_neighbours(arr, i, N);
-        for (int j = 0; j < 3; j++)
-            addEdge(graph, i, arr[j]);
-    }
-    return graph;
-}
-
 int main()
 {
     // User Input
@@ -106,10 +79,9 @@ int main()
         cout << "Select one of the following graphs to simulate:" << NEWLINE << endl;
         cout << TAB << "1. N Cycle Graph" << NEWLINE;
         cout << TAB << "2. Complete Graph" << NEWLINE;
-        cout << TAB << "3. Empty Graph" << NEWLINE;
-        cout << TAB << "4. Heap Graph" << NEWLINE << TAB;
+        cout << TAB << "3. Empty Graph" << NEWLINE << TAB;
         cin >> graphChoice;
-    } while (graphChoice < 1 || graphChoice > 4);
+    } while (graphChoice < 1 || graphChoice > 3);
 
     cout << "Enter no of nodes in the graph: " << NEWLINE << TAB;
     cin >> N;
@@ -145,9 +117,6 @@ int main()
     case 3:
         adj = emptyGraph(N);
         break;
-    case 4:
-        adj = heapGraph(N);
-        break;
     default:
         adj = nCycle(N);
         break;
@@ -163,15 +132,10 @@ int main()
         graph.connected_components();
         break;
     case 2:
-        if (graph.one_cycle()) {
-            cout << "Cycle Found!" << NEWLINE;
-        }
-        else {
-            cout << "No Cycle" << NEWLINE;
-        }
+        graph.one_cycle();
         break;
     case 3:
-        graph.shortest_paths();
+        graph.shortest_paths(0);
         break;
     default:
         break;

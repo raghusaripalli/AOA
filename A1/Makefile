@@ -2,8 +2,11 @@ CC = g++ -O2 -Wall "-Wl,--stack=1073741824" -Wno-deprecated
 
 all: simulated_test
 
-simulated_test: graph_operations.o simulated_test.o 
-				$(CC) -o simulated_test graph_operations.o simulated_test.o
+simulated_test: MinHeap.o graph_operations.o simulated_test.o 
+				$(CC) -o simulated_test MinHeap.o graph_operations.o simulated_test.o
+
+MinHeap.o: MinHeap.cc 
+					$(CC) -g -c MinHeap.cc
 
 graph_operations.o: graph_operations.cc 
 					$(CC) -g -c graph_operations.cc

@@ -15,11 +15,11 @@ public:
     Graph(unordered_map<int, list<int> *> *g, int n);
     ~Graph();
     void connected_components();
-    bool one_cycle();
-    void shortest_paths();
+    void one_cycle();
+    void shortest_paths(int source);
 
     void DFS(unordered_set<int> *visited, int v);
-    bool isCyclic(unordered_set<int> *visited, int v, int parent);
+    bool findCycle(unordered_set<int> *visited, int v, int parent, vector<int> *path);
 };
 
 #endif
