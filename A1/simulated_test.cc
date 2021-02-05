@@ -4,21 +4,16 @@ clock_t t;
 
 // Helper Methods
 
-void addEdge(unordered_map<int, list<int> *> *graph, int v, int w)
+void addEdge(vector<int> *adj, int u, int v)
 {
-
-    if (graph->find(v) == graph->end())
-        graph->insert({v, new list<int>()});
-    if (graph->find(w) == graph->end())
-        graph->insert({w, new list<int>()});
-    graph->at(v)->push_back(w);
-    graph->at(w)->push_back(v);
+    adj[v].push_back(u);
+    adj[u].push_back(v);
 }
 
-unordered_map<int, list<int> *> *initializeGraph(int N)
+vector<int> *initializeGraph(int N)
 {
-    unordered_map<int, list<int> *> *graph = new unordered_map<int, list<int> *>();
-    return graph;
+    vector<int> *adj = new vector<int>[N];
+    return adj;
 }
 
 void start_time()
@@ -33,40 +28,35 @@ void end_and_display_time(string stage)
     cout << stage << " took " << time_taken << " secs." << NEWLINE;
 }
 
-// Graph Simulation Methods
+// adj Simulation Methods
 
-unordered_map<int, list<int> *> *nCycle(int N)
+vector<int> *nCycle(int N)
 {
-    unordered_map<int, list<int> *> *graph = initializeGraph(N);
+    vector<int> *adj = initializeGraph(N);
     for (int i = 1; i < N; i++)
     {
-        addEdge(graph, i, i - 1);
+        addEdge(adj, i, i - 1);
     }
-    addEdge(graph, 0, N - 1);
-    return graph;
+    addEdge(adj, 0, N - 1);
+    return adj;
 }
 
-unordered_map<int, list<int> *> *completeGraph(int N)
+vector<int> *completeGraph(int N)
 {
-    unordered_map<int, list<int> *> *graph = initializeGraph(N);
+    vector<int> *adj = initializeGraph(N);
     for (int i = 0; i < N; i++)
     {
         for (int j = i + 1; j < N; j++)
         {
-            addEdge(graph, i, j);
+            addEdge(adj, i, j);
         }
     }
-    return graph;
+    return adj;
 }
 
-unordered_map<int, list<int> *> *emptyGraph(int N)
+vector<int> *emptyGraph(int N)
 {
-    unordered_map<int, list<int> *> *graph = initializeGraph(N);
-    for (int i = 0; i < N; i++)
-    {
-        graph->insert({i, new list<int>()});
-    }
-    return graph;
+    return initializeGraph(N);
 }
 
 int main()
@@ -77,18 +67,18 @@ int main()
     do
     {
         cout << "Select one of the following graphs to simulate:" << NEWLINE << endl;
-        cout << TAB << "1. N Cycle Graph" << NEWLINE;
-        cout << TAB << "2. Complete Graph" << NEWLINE;
-        cout << TAB << "3. Empty Graph" << NEWLINE << TAB;
+        cout << TAB << "1. N Cycle adj" << NEWLINE;
+        cout << TAB << "2. Complete adj" << NEWLINE;
+        cout << TAB << "3. Empty adj" << NEWLINE << TAB;
         cin >> graphChoice;
     } while (graphChoice < 1 || graphChoice > 3);
 
-    cout << "Enter no of nodes in the graph: " << NEWLINE << TAB;
+    cout << "Enter no of nodes in the adj: " << NEWLINE << TAB;
     cin >> N;
 
     do
     {
-        cout << "Select one of the 3 algorithms to run on the above mentioned graph:" << NEWLINE << endl;
+        cout << "Select one of the 3 algorithms to run on the above mentioned adj:" << NEWLINE << endl;
         cout << TAB << "1. Connected Components" << NEWLINE;
         cout << TAB << "2. One Cycle" << NEWLINE;
         cout << TAB << "3. Shortest Paths" << NEWLINE << TAB;
@@ -105,7 +95,7 @@ int main()
     freopen(fileName.c_str(), "w", stdout);
 
     start_time();
-    unordered_map<int, list<int> *> *adj;
+    vector<int> *adj;
     switch (graphChoice)
     {
     case 1:
@@ -123,7 +113,7 @@ int main()
     }
     end_and_display_time("Graph Simulation");
 
-    // Create and Assign to Graph
+    // Create and Assign to graph
     Graph graph(adj, N);
     start_time();
     switch (algoChoice)

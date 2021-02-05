@@ -1,29 +1,29 @@
 #include "graph_operations.h"
 #include "MinHeap.h"
 
-void Graph::DFS(unordered_set<int> *visited, int v)
+void Graph::DFS(bool *visited, int v)
 {
     // mark node 'v' as visited
-    visited->insert(v);
+    visited[v] = true;
     cout << v << " ";
 
     // Iterate through all the nodes connected to 'v'
-    list<int>::iterator i;
-    for (i = (*adj)[v]->begin(); i != (*adj)[v]->end(); ++i)
-        if (visited->find(*i) == visited->end())
+    vector<int>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+        if (!visited[*i])
             DFS(visited, *i);
 }
 
-bool Graph::findCycle(unordered_set<int> *visited, int v, int parent, vector<int> *path)
+bool Graph::findCycle(bool *visited, int v, int parent, vector<int> *path)
 {
     // mark node 'v' as visited
-    visited->insert(v);
+    visited[v] = true;
 
     // Iterate through all the nodes connected to 'v'
-    list<int>::iterator i;
-    for (i = (*adj)[v]->begin(); i != (*adj)[v]->end(); ++i)
+    vector<int>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
     {
-        if (visited->find(*i) == visited->end())
+        if (!visited[*i])
         {
             if (findCycle(visited, *i, v, path))
             {
@@ -46,13 +46,14 @@ bool Graph::findCycle(unordered_set<int> *visited, int v, int parent, vector<int
 
 void Graph::connected_components()
 {
-    // Create visited set
-    unordered_set<int> *visited = new unordered_set<int>();
+    // Create visited arr and init it to false
+    bool *visited = new bool[N];
+    for (int i = 0; i < N; i++)
+        visited[i] = false;
 
-    for (auto it = adj->begin(); it != adj->end(); ++it)
+    for (int i = 0; i < N; i++)
     {
-        int i = it->first;
-        if (visited->find(i) == visited->end())
+        if (!visited[i])
         {
             DFS(visited, i);
             cout << NEWLINE;
@@ -65,12 +66,15 @@ void Graph::connected_components()
 void Graph::one_cycle()
 {
     // Create visited set
-    unordered_set<int> *visited = new unordered_set<int>();
+    bool *visited = new bool[N];
+    for (int i = 0; i < N; i++)
+        visited[i] = false;
+
     vector<int> *path = new vector<int>();
     bool found = false;
     for (int i = 0; i < N; i++)
     {
-        if (visited->find(i) == visited->end())
+        if (!visited[i])
         {
             if (findCycle(visited, i, -1, path))
             {
@@ -95,22 +99,20 @@ void Graph::one_cycle()
 
     // free visited and path
     delete visited;
-    delete path;
 }
 
 void Graph::shortest_paths(int source)
 {
-    unordered_map<int, int> dist;
-    map<int, int> parent;
-    map<int, list<int>*>* paths = new map<int, list<int>*>(); 
+    int dist[N];
+    int parent[N];
+    vector<int> *paths[N];
 
     MinPriorityQueue pq;
 
     struct MinHeap *minHeap = pq.createMinHeap(N);
 
-    for (auto it = adj->begin(); it != adj->end(); ++it)
+    for (int v = 0; v < N; v++)
     {
-        int v = it->first;
         dist[v] = INT_MAX;
         minHeap->array[v] = pq.newMinHeapNode(v, dist[v]);
         minHeap->pos[v] = v;
@@ -139,8 +141,8 @@ void Graph::shortest_paths(int source)
         dist[u] = minHeapNode->dist;
 
         // Traverse through all adjacent vertices of u (the extracted vertex) and update their distance values
-        list<int>::iterator i;
-        for (i = (*adj)[u]->begin(); i != (*adj)[u]->end(); ++i)
+        vector<int>::iterator i;
+        for (i = adj[u].begin(); i != adj[u].end(); ++i)
         {
             int v = *i;
             if (pq.isInMinHeap(minHeap, v) && dist[u] != INT_MAX && 1 + dist[u] < dist[v])
@@ -156,42 +158,46 @@ void Graph::shortest_paths(int source)
         }
     }
 
+    /*
     cout << "Parent" << endl;
-    for (auto it = parent.begin(); it != parent.end(); ++it)
+    for (int i = 0; i < N; ++i)
     {
-        cout << it->first << ":" << it->second << NEWLINE;
+        cout << i << ":" << parent[i] << NEWLINE;
     }
 
     cout << "Distance" << endl;
-    for (auto it = dist.begin(); it != dist.end(); ++it)
+    for (int i = 0; i < N; ++i)
     {
-        cout << it->first << ":" << it->second << NEWLINE;
+        cout << i << ":" << dist[i] << NEWLINE;
     }
+    */
 
-    for (auto it = parent.begin(); it != parent.end(); ++it)
+    for (int i = 0; i < N; ++i)
     {
-        int v = it->first;
-        list<int> *shortest_path = new list<int>();
-        while (parent[v] != -1) {
+        int v = i;
+        vector<int> *shortest_path = new vector<int>();
+        while (parent[v] != -1)
+        {
             shortest_path->push_back(parent[v]);
             v = parent[v];
         }
-        paths->insert({it->first, shortest_path});
+        paths[i] = shortest_path;
     }
 
-    cout << "Paths:" << endl;
-    for (auto it = paths->begin(); it != paths->end(); ++it)
+    cout << "Shortest Paths:" << endl;
+    for (int i = 0; i < N; i++)
     {
-        cout << it->first << ":[";
-        list<int> *shortest_path = it->second;
-        for (auto i = shortest_path->begin(); i != shortest_path->end(); ++i) {
-            cout << *i << " ";
+
+        cout << i << ":[";
+        for (auto j = paths[i]->begin(); j != paths[i]->end(); ++j)
+        {
+            cout << *j << " ";
         }
-        cout << "]" << NEWLINE; 
+        cout << "]" << NEWLINE;
     }
 }
 
-Graph::Graph(unordered_map<int, list<int> *> *g, int n)
+Graph::Graph(vector<int> *g, int n)
 {
     adj = g;
     N = n;

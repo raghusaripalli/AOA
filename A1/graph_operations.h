@@ -10,16 +10,16 @@ using namespace std;
 class Graph
 {
 public:
-    unordered_map<int, list<int> *> *adj;
+    vector<int> *adj;
     int N;
-    Graph(unordered_map<int, list<int> *> *g, int n);
+    Graph(vector<int> *g, int n);
     ~Graph();
     void connected_components();
     void one_cycle();
     void shortest_paths(int source);
 
-    void DFS(unordered_set<int> *visited, int v);
-    bool findCycle(unordered_set<int> *visited, int v, int parent, vector<int> *path);
+    void DFS(bool *visited, int v);
+    bool findCycle(bool *visited, int v, int parent, vector<int> *path);
 };
 
 #endif
