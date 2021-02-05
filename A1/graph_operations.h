@@ -12,14 +12,19 @@ class Graph
 public:
     vector<int> *adj;
     int N;
-    Graph(vector<int> *g, int n);
+    Graph(int n);
     ~Graph();
+
+    // Algorithms
     void connected_components();
     void one_cycle();
     void shortest_paths(int source);
 
+    // Helper for Algorithms
     void DFS(bool *visited, int v);
     bool findCycle(bool *visited, int v, int parent, vector<int> *path);
-};
 
+    // Graph Utilities
+    void addEdge(int u, int v);
+};
 #endif

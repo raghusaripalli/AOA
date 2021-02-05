@@ -4,18 +4,6 @@ clock_t t;
 
 // Helper Methods
 
-void addEdge(vector<int> *adj, int u, int v)
-{
-    adj[v].push_back(u);
-    adj[u].push_back(v);
-}
-
-vector<int> *initializeGraph(int N)
-{
-    vector<int> *adj = new vector<int>[N];
-    return adj;
-}
-
 void start_time()
 {
     t = clock();
@@ -30,33 +18,24 @@ void end_and_display_time(string stage)
 
 // adj Simulation Methods
 
-vector<int> *nCycle(int N)
+void nCycle(Graph g)
 {
-    vector<int> *adj = initializeGraph(N);
-    for (int i = 1; i < N; i++)
+    for (int i = 1; i < g.N; i++)
     {
-        addEdge(adj, i, i - 1);
+        g.addEdge(i, i - 1);
     }
-    addEdge(adj, 0, N - 1);
-    return adj;
+    g.addEdge(0, g.N - 1);
 }
 
-vector<int> *completeGraph(int N)
+void completeGraph(Graph g)
 {
-    vector<int> *adj = initializeGraph(N);
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < g.N; i++)
     {
-        for (int j = i + 1; j < N; j++)
+        for (int j = i + 1; j < g.N; j++)
         {
-            addEdge(adj, i, j);
+            g.addEdge(i, j);
         }
     }
-    return adj;
-}
-
-vector<int> *emptyGraph(int N)
-{
-    return initializeGraph(N);
 }
 
 int main()
@@ -91,31 +70,32 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    // redirect stdout to output.txt
+    // redirect stdout to file
     freopen(fileName.c_str(), "w", stdout);
 
     start_time();
-    vector<int> *adj;
+    // Initialize graph DS
+    Graph graph(N);
+
+    // Add edges acc to criteria
     switch (graphChoice)
     {
     case 1:
-        adj = nCycle(N);
+        nCycle(graph);
         break;
     case 2:
-        adj = completeGraph(N);
+        completeGraph(graph);
         break;
     case 3:
-        adj = emptyGraph(N);
         break;
     default:
-        adj = nCycle(N);
+        nCycle(graph);
         break;
     }
     end_and_display_time("Graph Simulation");
 
-    // Create and Assign to graph
-    Graph graph(adj, N);
     start_time();
+    // Exec appropriate algo as per user input
     switch (algoChoice)
     {
     case 1:

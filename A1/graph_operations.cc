@@ -46,6 +46,7 @@ bool Graph::findCycle(bool *visited, int v, int parent, vector<int> *path)
 
 void Graph::connected_components()
 {
+    cout << "Connected Components" << NEWLINE;
     // Create visited arr and init it to false
     bool *visited = new bool[N];
     for (int i = 0; i < N; i++)
@@ -65,6 +66,7 @@ void Graph::connected_components()
 
 void Graph::one_cycle()
 {
+    cout << "One Cycle" << NEWLINE;
     // Create visited set
     bool *visited = new bool[N];
     for (int i = 0; i < N; i++)
@@ -103,6 +105,7 @@ void Graph::one_cycle()
 
 void Graph::shortest_paths(int source)
 {
+    cout << "Shortest Paths" << NEWLINE;
     int dist[N];
     int parent[N];
     vector<int> *paths[N];
@@ -172,7 +175,19 @@ void Graph::shortest_paths(int source)
     }
     */
 
-    for (int i = 0; i < N; ++i)
+   for (int i = 0; i < N; ++i)
+    {
+        int v = i;
+        cout << i << ": [";
+        while (parent[v] != -1)
+        {
+            cout << parent[v] << " ";
+            v = parent[v];
+        }
+        cout << "]" << NEWLINE;
+    }
+    
+    /*for (int i = 0; i < N; ++i)
     {
         int v = i;
         vector<int> *shortest_path = new vector<int>();
@@ -194,12 +209,19 @@ void Graph::shortest_paths(int source)
             cout << *j << " ";
         }
         cout << "]" << NEWLINE;
-    }
+    }*/
 }
 
-Graph::Graph(vector<int> *g, int n)
+Graph::Graph(int n)
 {
-    adj = g;
     N = n;
+    adj = new vector<int>[N];
 }
 Graph::~Graph() {}
+
+
+void Graph::addEdge(int u, int v)
+{
+    adj[v].push_back(u);
+    adj[u].push_back(v);
+}
