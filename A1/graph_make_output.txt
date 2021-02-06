@@ -1,8 +1,0 @@
-data/ratings_data_1.txt
-File Opened
-File Closed
-data/ratings_data_2.txt
-File Opened
-File Closed
-data/ratings_data_3.txt
-File Opened

@@ -1,17 +1,17 @@
 #include "graph_operations.h"
 #include "MinHeap.h"
 
-void Graph::DFS(bool *visited, int v)
+void Graph::DFS(bool *visited, int v, vector<int> *cc, int cc_idx)
 {
     // mark node 'v' as visited
     visited[v] = true;
-    cout << v << " ";
+    cc[cc_idx].push_back(v);
 
     // Iterate through all the nodes connected to 'v'
     vector<int>::iterator i;
     for (i = adj[v].begin(); i != adj[v].end(); ++i)
         if (!visited[*i])
-            DFS(visited, *i);
+            DFS(visited, *i, cc, cc_idx);
 }
 
 bool Graph::findCycle(bool *visited, int v, int parent, vector<int> *path)
@@ -44,7 +44,7 @@ bool Graph::findCycle(bool *visited, int v, int parent, vector<int> *path)
     return false;
 }
 
-void Graph::connected_components()
+vector<int>* Graph::connected_components()
 {
     cout << "Connected Components" << NEWLINE;
     // Create visited arr and init it to false
@@ -52,16 +52,22 @@ void Graph::connected_components()
     for (int i = 0; i < N; i++)
         visited[i] = false;
 
+    // declare arr of vectors for connected components
+    vector<int> *cc = new vector<int>[N];
+    int cc_idx = 0;
+
     for (int i = 0; i < N; i++)
     {
         if (!visited[i])
         {
-            DFS(visited, i);
-            cout << NEWLINE;
+            DFS(visited, i, cc, cc_idx);
+            cc_idx++;
         }
     }
     // free visited
     delete visited;
+
+    return cc;
 }
 
 void Graph::one_cycle()
@@ -175,7 +181,7 @@ void Graph::shortest_paths(int source)
     }
     */
 
-   for (int i = 0; i < N; ++i)
+    for (int i = 0; i < N; ++i)
     {
         int v = i;
         cout << i << ": [";
@@ -184,9 +190,10 @@ void Graph::shortest_paths(int source)
             cout << parent[v] << " ";
             v = parent[v];
         }
-        cout << "]" << NEWLINE;
+        cout << "]"
+             << ";";
     }
-    
+
     /*for (int i = 0; i < N; ++i)
     {
         int v = i;
@@ -218,7 +225,6 @@ Graph::Graph(int n)
     adj = new vector<int>[N];
 }
 Graph::~Graph() {}
-
 
 void Graph::addEdge(int u, int v)
 {

@@ -1,8 +1,4 @@
-#include "graph_operations.h"
-#define USER_N_ 480189
-#define USER_MAX_N_ 2649430
-#define MOVIE_N_ 17771
-using namespace std;
+#include "graph_make.h"
 
 void read_netflix_data(
     unordered_map<int, int> *lookup,
@@ -10,12 +6,13 @@ void read_netflix_data(
     vector<int> *users,
     vector<int> *movies)
 {
+    // paths of the input files
     string arr[] = {"data/ratings_data_1.txt", "data/ratings_data_2.txt", "data/ratings_data_3.txt", "data/ratings_data_4.txt"};
     int id = 0;
     for (int k = 0; k < 4; k++)
     {
         cout << arr[k] << endl;
-        ifstream input(arr[k]);
+        ifstream input(arr[k]); // opening the kth input file
         string delimiter = ",", movie_delim = ":";
         if (input.is_open())
         {
@@ -34,6 +31,7 @@ void read_netflix_data(
                 }
                 number = line.substr(0, line.find(delimiter));
                 user_id = atoi(number.c_str());
+                // If user_id id not in the lookup table
                 if (lookup->find(user_id) == lookup->end())
                 {
                     lookup->insert({user_id, id});
@@ -58,8 +56,6 @@ void read_netflix_data(
 
 // Movie Critics - Users who rated atleast 750 movies
 void graph_criteria_1(
-    unordered_map<int, int> *lookup,
-    unordered_map<int, int> *rLookup,
     vector<int> *users,
     vector<int> *movies,
     Graph *g)
@@ -69,12 +65,13 @@ void graph_criteria_1(
     vector<int> criteria_users;
 
     int N = 750;
-    vector<int>::iterator it, jt;
-    for (int i = 1; i < USER_N_; i++)
+    // Adding user_ids to criteria_users
+    for (int i = 0; i < g->N; i++)
         if (users[i].size() >= N)
-            criteria_users.push_back(rLookup->at(i));
+            criteria_users.push_back(i);
 
     int criteria_user_size = criteria_users.size();
+    // Creating complete graph between all criteria users. So. adding edge between all users.
     for (int i = 0; i < criteria_user_size; i++)
     {
         for (int j = i + 1; j < criteria_user_size; j++)
@@ -84,34 +81,4 @@ void graph_criteria_1(
     }
 
     cout << "Building Graph Completed" << endl;
-}
-
-int main()
-{
-    // Fast IO
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    // redirect stdout to file
-    string fileName = "graph_make_output.txt";
-    freopen(fileName.c_str(), "w", stdout);
-
-    // Data structures to hold netflix data
-    unordered_map<int, int> *lookup, *rLookup;
-    lookup = new unordered_map<int, int>();
-    rLookup = new unordered_map<int, int>();
-    vector<int> *users = new vector<int>[USER_N_];
-    vector<int> *movies = new vector<int>[MOVIE_N_];
-
-    // Load data from all four files
-    read_netflix_data(lookup, rLookup, users, movies);
-
-    Graph *g = new Graph(USER_MAX_N_);
-
-    // Build graph based on criteria 1
-    graph_criteria_1(lookup, rLookup, users, movies, g);
-
-    g->connected_components();
-    g->shortest_paths(7);
-    return 0;
 }

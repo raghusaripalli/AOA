@@ -1,0 +1,9 @@
+Graph Simulation took 0 secs.
+Connected Components
+0: [0 ]
+1: [1 ]
+2: [2 ]
+3: [3 ]
+4: [4 ]
+Algorithm Execution took 0 secs.
+

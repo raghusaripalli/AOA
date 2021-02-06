@@ -16,6 +16,19 @@ void end_and_display_time(string stage)
     cout << stage << " took " << time_taken << " secs." << NEWLINE;
 }
 
+void printConnectedComponents(vector<int> *cc, int N)
+{
+    for (int i = 0; i < N; i++)
+    {
+        cout << i << ": [";
+        for (auto it = cc[i].begin(); it != cc[i].end(); ++it)
+        {
+            cout << *it << " ";
+        }
+        cout << "]" << NEWLINE;
+    }
+}
+
 // adj Simulation Methods
 
 void nCycle(Graph g)
@@ -42,7 +55,7 @@ int main()
 {
     // User Input
     int N, graphChoice, algoChoice;
-    string fileName = "simulated_test_output.txt";
+    string fileName = "output/simulated_test_output.txt";
     do
     {
         cout << "Select one of the following graphs to simulate:" << NEWLINE << endl;
@@ -99,7 +112,7 @@ int main()
     switch (algoChoice)
     {
     case 1:
-        graph.connected_components();
+        printConnectedComponents(graph.connected_components(), N);
         break;
     case 2:
         graph.one_cycle();

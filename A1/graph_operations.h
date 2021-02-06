@@ -16,12 +16,12 @@ public:
     ~Graph();
 
     // Algorithms
-    void connected_components();
+    vector<int>* connected_components();
     void one_cycle();
     void shortest_paths(int source);
 
     // Helper for Algorithms
-    void DFS(bool *visited, int v);
+    void DFS(bool *visited, int v, vector<int> *cc, int cc_idx);
     bool findCycle(bool *visited, int v, int parent, vector<int> *path);
 
     // Graph Utilities

@@ -1,0 +1,19 @@
+data/ratings_data_1.txt
+File Opened
+File Closed
+data/ratings_data_2.txt
+File Opened
+File Closed
+data/ratings_data_3.txt
+File Opened
+File Closed
+data/ratings_data_4.txt
+File Opened
+File Closed
+Data Reading Completed.
+Building Graph
+Building Graph Completed
+Connected Components
+No of connected components: 1
+Size of connected components:
+1:25981
