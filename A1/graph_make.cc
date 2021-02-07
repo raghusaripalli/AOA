@@ -1,14 +1,24 @@
 #include "graph_make.h"
+#define RATING_N_ 1
+
+// 9808 - 1
+// 3136 - 2
+// 62 - 3
+// 20 - 4
+// 52 - 5
 
 void read_netflix_data(
     unordered_map<int, int> *lookup,
     unordered_map<int, int> *rLookup,
+    unordered_map<string, int> *dLookup,
     vector<int> *users,
-    vector<int> *movies)
+    vector<int> *movies,
+    vector<int> *dates,
+    vector<int> *ratings)
 {
     // paths of the input files
     string arr[] = {"data/ratings_data_1.txt", "data/ratings_data_2.txt", "data/ratings_data_3.txt", "data/ratings_data_4.txt"};
-    int id = 0;
+    int id = 0, date_id = 0;
     for (int k = 0; k < 4; k++)
     {
         cout << arr[k] << endl;
@@ -17,12 +27,14 @@ void read_netflix_data(
         if (input.is_open())
         {
             cout << "File Opened" << endl;
-            string mid, number;
-            int movie_id = 0, user_id, eid;
+            string mid, number, date, rstr;
+            int movie_id = 0, user_id, eid, edid, rating;
             while (!input.eof())
             {
                 string line;
                 getline(input, line);
+                if (line.size() < 2)
+                    continue;
                 if (line.find(movie_delim) != string::npos)
                 {
                     mid = line.substr(0, line.find(movie_delim));
@@ -30,7 +42,11 @@ void read_netflix_data(
                     continue;
                 }
                 number = line.substr(0, line.find(delimiter));
+                date = line.substr(line.size() - 10);
+                rstr = line.substr(line.size() - 12, 1);
+                rating = atoi(rstr.c_str());
                 user_id = atoi(number.c_str());
+
                 // If user_id id not in the lookup table
                 if (lookup->find(user_id) == lookup->end())
                 {
@@ -46,12 +62,26 @@ void read_netflix_data(
                     users[eid].push_back(movie_id);
                     movies[movie_id].push_back(eid);
                 }
+
+                if (dLookup->find(date) == dLookup->end())
+                {
+                    dLookup->insert({date, date_id});
+                    dates[date_id].push_back(lookup->at(user_id));
+                    ratings[date_id].push_back(rating);
+                    date_id++;
+                }
+                else
+                {
+                    edid = dLookup->at(date);
+                    dates[edid].push_back(lookup->at(user_id));
+                    ratings[edid].push_back(rating);
+                }
             }
             input.close();
             cout << "File Closed" << endl;
         }
     }
-    cout << "Data Reading Completed." << endl;
+    cout << "Data Reading Completed." << NEWLINE << endl;
 }
 
 // Movie Critics - Users who rated atleast 750 movies
@@ -60,7 +90,7 @@ void graph_criteria_1(
     vector<int> *movies,
     Graph *g)
 {
-    cout << "Building Graph" << endl;
+    cout << "Building Graph based on Criteria 1" << endl;
 
     vector<int> criteria_users;
 
@@ -77,6 +107,23 @@ void graph_criteria_1(
         for (int j = i + 1; j < criteria_user_size; j++)
         {
             g->addEdge(criteria_users[i], criteria_users[j]);
+        }
+    }
+
+    cout << "Building Graph Completed" << endl;
+}
+
+// Movie Buddies - connecting users who rated movies on same date and ratings == RATINGS_N_
+void graph_criteria_2(vector<int> *dates, vector<int> *ratings, Graph *g)
+{
+    cout << "Building Graph based on Criteria 2" << endl;
+    for (int i = 0; i < DATE_N_; i++)
+    {
+        int ND = dates[i].size();
+        for (int j = 1; j < ND; j++)
+        {
+            if (ratings[i][j] == RATING_N_ && ratings[i][j - 1] == RATING_N_)
+                g->addEdge(dates[i][j], dates[i][j - 1]);
         }
     }
 
