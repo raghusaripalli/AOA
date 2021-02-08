@@ -16,9 +16,9 @@ public:
     ~Graph();
 
     // Algorithms
-    vector<int>* connected_components();
-    void one_cycle();
-    void shortest_paths(int source);
+    vector<int> *connected_components();
+    vector<int> *one_cycle();
+    vector<int> *shortest_paths(int source);
 
     // Helper for Algorithms
     void DFS(bool *visited, int v, vector<int> *cc, int cc_idx);

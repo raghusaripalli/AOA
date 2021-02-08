@@ -1,137 +1,100 @@
-#include "MinHeap.h"
+#include "MinPQ.h"
 
 MinPriorityQueue::MinPriorityQueue() {}
 MinPriorityQueue::~MinPriorityQueue() {}
 
-struct MinHeapNode *MinPriorityQueue::newMinHeapNode(int v, int dist)
+struct Node *MinPriorityQueue::newNode(int v, int dist)
 {
-    struct MinHeapNode *minHeapNode =
-        (struct MinHeapNode *)
-            malloc(sizeof(struct MinHeapNode));
-    minHeapNode->v = v;
-    minHeapNode->dist = dist;
-    return minHeapNode;
+    struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+    node->vertex = v;
+    node->distance = dist;
+    return node;
 }
 
-struct MinHeap *MinPriorityQueue::createMinHeap(int capacity)
+struct MinPQ *MinPriorityQueue::newMinPQ(int capacity)
 {
-    struct MinHeap *minHeap =
-        (struct MinHeap *)
-            malloc(sizeof(struct MinHeap));
-    minHeap->pos = (int *)malloc(
-        capacity * sizeof(int));
-    minHeap->size = 0;
-    minHeap->capacity = capacity;
-    minHeap->array =
-        (struct MinHeapNode **)
-            malloc(capacity *
-                   sizeof(struct MinHeapNode *));
-    return minHeap;
+    struct MinPQ *minPQ = (struct MinPQ *)malloc(sizeof(struct MinPQ));
+    minPQ->positionsForDecreaseKey = (int *)malloc(capacity * sizeof(int));
+    minPQ->size = 0;
+    minPQ->capacity = capacity;
+    minPQ->array = (struct Node **)malloc(capacity * sizeof(struct Node *));
+    return minPQ;
 }
 
-void MinPriorityQueue::swapMinHeapNode(struct MinHeapNode **a, struct MinHeapNode **b)
+void MinPriorityQueue::swapNodes(struct Node **a, struct Node **b)
 {
-    struct MinHeapNode *t = *a;
+    struct Node *t = *a;
     *a = *b;
     *b = t;
 }
 
-void MinPriorityQueue::minHeapify(struct MinHeap *minHeap, int idx)
+void MinPriorityQueue::heapify(struct MinPQ *minPQ, int idx)
 {
-    int smallest, left, right;
-    smallest = idx;
-    left = 2 * idx + 1;
-    right = 2 * idx + 2;
+    int least, left, right;
+    least = idx;
+    left = (idx * 2) + 1;
+    right = (idx * 2) + 2;
 
-    if (left < minHeap->size &&
-        minHeap->array[left]->dist <
-            minHeap->array[smallest]->dist)
-        smallest = left;
+    if (left < minPQ->size && minPQ->array[left]->distance < minPQ->array[least]->distance)
+        least = left;
 
-    if (right < minHeap->size &&
-        minHeap->array[right]->dist <
-            minHeap->array[smallest]->dist)
-        smallest = right;
+    if (right < minPQ->size && minPQ->array[right]->distance < minPQ->array[least]->distance)
+        least = right;
 
-    if (smallest != idx)
+    if (least != idx)
     {
-        // The nodes to be swapped in min heap
-        MinHeapNode *smallestNode =
-            minHeap->array[smallest];
-        MinHeapNode *idxNode =
-            minHeap->array[idx];
+        Node *leastNode = minPQ->array[least];
+        Node *idxNode = minPQ->array[idx];
 
-        // Swap positions
-        minHeap->pos[smallestNode->v] = idx;
-        minHeap->pos[idxNode->v] = smallest;
+        minPQ->positionsForDecreaseKey[leastNode->vertex] = idx;
+        minPQ->positionsForDecreaseKey[idxNode->vertex] = least;
 
-        // Swap nodes
-        swapMinHeapNode(&minHeap->array[smallest],
-                        &minHeap->array[idx]);
+        swapNodes(&minPQ->array[least], &minPQ->array[idx]);
 
-        minHeapify(minHeap, smallest);
+        heapify(minPQ, least);
     }
 }
 
-int MinPriorityQueue::isEmpty(struct MinHeap *minHeap)
+int MinPriorityQueue::isEmpty(struct MinPQ *minPQ)
 {
-    return minHeap->size == 0;
+    return minPQ->size == 0;
 }
 
-struct MinHeapNode *MinPriorityQueue::extractMin(struct MinHeap *minHeap)
+struct Node *MinPriorityQueue::extractMin(struct MinPQ *minPQ)
 {
-    if (isEmpty(minHeap))
+    if (isEmpty(minPQ))
         return NULL;
 
-    // Store the root node
-    struct MinHeapNode *root =
-        minHeap->array[0];
+    struct Node *root = minPQ->array[0];
 
-    // Replace root node with last node
-    struct MinHeapNode *lastNode =
-        minHeap->array[minHeap->size - 1];
-    minHeap->array[0] = lastNode;
+    struct Node *lastNode = minPQ->array[minPQ->size - 1];
+    minPQ->array[0] = lastNode;
 
-    // Update position of last node
-    minHeap->pos[root->v] = minHeap->size - 1;
-    minHeap->pos[lastNode->v] = 0;
+    minPQ->positionsForDecreaseKey[root->vertex] = minPQ->size - 1;
+    minPQ->positionsForDecreaseKey[lastNode->vertex] = 0;
 
-    // Reduce heap size and heapify root
-    --minHeap->size;
-    minHeapify(minHeap, 0);
+    --minPQ->size;
+    heapify(minPQ, 0);
 
     return root;
 }
 
-void MinPriorityQueue::decreaseKey(struct MinHeap *minHeap, int v, int dist)
+void MinPriorityQueue::decreaseKey(struct MinPQ *minPQ, int v, int dist)
 {
-    // Get the index of v in  heap array
-    int i = minHeap->pos[v];
+    int i = minPQ->positionsForDecreaseKey[v];
+    minPQ->array[i]->distance = dist;
 
-    // Get the node and update its dist value
-    minHeap->array[i]->dist = dist;
-
-    // Travel up while the complete
-    // tree is not hepified.
-    // This is a O(Logn) loop
-    while (i && minHeap->array[i]->dist <
-                    minHeap->array[(i - 1) / 2]->dist)
+    while (i && minPQ->array[i]->distance < minPQ->array[(i - 1) / 2]->distance)
     {
-        // Swap this node with its parent
-        minHeap->pos[minHeap->array[i]->v] =
-            (i - 1) / 2;
-        minHeap->pos[minHeap->array[(i - 1) / 2]->v] = i;
-        swapMinHeapNode(&minHeap->array[i],
-                        &minHeap->array[(i - 1) / 2]);
 
-        // move to parent index
+        minPQ->positionsForDecreaseKey[minPQ->array[i]->vertex] = (i - 1) / 2;
+        minPQ->positionsForDecreaseKey[minPQ->array[(i - 1) / 2]->vertex] = i;
+        swapNodes(&minPQ->array[i], &minPQ->array[(i - 1) / 2]);
         i = (i - 1) / 2;
     }
 }
 
-bool MinPriorityQueue::isInMinHeap(struct MinHeap *minHeap, int v)
+bool MinPriorityQueue::isInMinPQ(struct MinPQ *minPQ, int v)
 {
-    if (minHeap->pos[v] < minHeap->size)
-        return true;
-    return false;
+    return minPQ->positionsForDecreaseKey[v] < minPQ->size;
 }

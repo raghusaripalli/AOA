@@ -84,7 +84,7 @@ void read_netflix_data(
     cout << "Data Reading Completed." << NEWLINE << endl;
 }
 
-// Movie Critics - Users who rated atleast 750 movies
+// Movie Critics - Users who rated atleast 1000 movies
 void graph_criteria_1(
     vector<int> *users,
     vector<int> *movies,
@@ -94,10 +94,10 @@ void graph_criteria_1(
 
     vector<int> criteria_users;
 
-    int N = 750;
+    int N = 1000;
     // Adding user_ids to criteria_users
     for (int i = 0; i < g->N; i++)
-        if (users[i].size() >= N)
+        if ((int)users[i].size() >= N)
             criteria_users.push_back(i);
 
     int criteria_user_size = criteria_users.size();

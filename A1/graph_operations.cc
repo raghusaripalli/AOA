@@ -1,5 +1,5 @@
 #include "graph_operations.h"
-#include "MinHeap.h"
+#include "MinPQ.h"
 
 void Graph::DFS(bool *visited, int v, vector<int> *cc, int cc_idx)
 {
@@ -44,7 +44,7 @@ bool Graph::findCycle(bool *visited, int v, int parent, vector<int> *path)
     return false;
 }
 
-vector<int>* Graph::connected_components()
+vector<int> *Graph::connected_components()
 {
     cout << "Connected Components" << NEWLINE;
     // Create visited arr and init it to false
@@ -70,14 +70,16 @@ vector<int>* Graph::connected_components()
     return cc;
 }
 
-void Graph::one_cycle()
+vector<int> *Graph::one_cycle()
 {
     cout << "One Cycle" << NEWLINE;
+
     // Create visited set
     bool *visited = new bool[N];
     for (int i = 0; i < N; i++)
         visited[i] = false;
 
+    // Path vector
     vector<int> *path = new vector<int>();
     bool found = false;
     for (int i = 0; i < N; i++)
@@ -92,74 +94,71 @@ void Graph::one_cycle()
         }
     }
 
-    if (found)
-    {
-        cout << "Cycle Found:" << NEWLINE;
-        vector<int>::iterator i;
-        for (i = path->begin(); i != path->end(); ++i)
-            cout << *i << " ";
-        cout << NEWLINE;
-    }
-    else
-    {
-        cout << "Cycle Not Found." << NEWLINE;
-    }
-
     // free visited and path
     delete visited;
+
+    // If found return path else null
+    if (found)
+        return path;
+
+    else
+        return NULL;
 }
 
-void Graph::shortest_paths(int source)
+vector<int> *Graph::shortest_paths(int source)
 {
-    cout << "Shortest Paths" << NEWLINE;
+    cout << "Shortest Paths" << endl;
+
+    // DS to hold paths, parent and distances
     int dist[N];
     int parent[N];
-    vector<int> *paths[N];
+    vector<int> *paths = new vector<int>[N];
 
     MinPriorityQueue pq;
 
-    struct MinHeap *minHeap = pq.createMinHeap(N);
+    struct MinPQ *minPQ = pq.newMinPQ(N);
 
+    // Initializing dist, minPQ
     for (int v = 0; v < N; v++)
     {
         dist[v] = INT_MAX;
-        minHeap->array[v] = pq.newMinHeapNode(v, dist[v]);
-        minHeap->pos[v] = v;
+        parent[v] = -1;
+        minPQ->array[v] = pq.newNode(v, dist[v]);
+        minPQ->positionsForDecreaseKey[v] = v;
     }
 
-    // Distance from source to itself is zero
-    minHeap->array[source] = pq.newMinHeapNode(source, dist[source]);
-    minHeap->pos[source] = source;
+    // Put the source Node into MinPQ
+    minPQ->array[source] = pq.newNode(source, dist[source]);
+    minPQ->positionsForDecreaseKey[source] = source;
     dist[source] = 0;
     parent[source] = -1;
-    pq.decreaseKey(minHeap, source, dist[source]);
+    pq.decreaseKey(minPQ, source, dist[source]);
 
-    // Initially size of min heap is equal to V
-    minHeap->size = N;
+    minPQ->size = N;
 
-    // Loop till min heap is empty
-    while (!pq.isEmpty(minHeap))
+    // Iterate until minPQ is empty
+    while (!pq.isEmpty(minPQ))
     {
-        // Extract the vertex with minimum distance value
-        struct MinHeapNode *minHeapNode = pq.extractMin(minHeap);
+        // Extract the top element in the minPQ
+        struct Node *node = pq.extractMin(minPQ);
 
-        // Store the extracted vertex
-        int u = minHeapNode->v;
+        int u = node->vertex;
 
-        // update shortest distance of current vertex from source vertex
-        dist[u] = minHeapNode->dist;
+        dist[u] = node->distance;
 
-        // Traverse through all adjacent vertices of u (the extracted vertex) and update their distance values
+        // Iterating over the neighbours of vertex 'u'
         vector<int>::iterator i;
         for (i = adj[u].begin(); i != adj[u].end(); ++i)
         {
             int v = *i;
-            if (pq.isInMinHeap(minHeap, v) && dist[u] != INT_MAX && 1 + dist[u] < dist[v])
+            // Compare distances from neighbours to source in minPQ
+            // If the new dist is shorter update the minPQ, dist and parent
+            if (pq.isInMinPQ(minPQ, v) && dist[u] != INT_MAX && 1 + dist[u] < dist[v])
             {
                 dist[v] = dist[u] + 1;
 
                 // update distance
-                pq.decreaseKey(minHeap, v, dist[v]);
+                pq.decreaseKey(minPQ, v, dist[v]);
 
                 // update parent
                 parent[v] = u;
@@ -167,8 +166,7 @@ void Graph::shortest_paths(int source)
         }
     }
 
-    /*
-    cout << "Parent" << endl;
+    /*cout << "Parent" << endl;
     for (int i = 0; i < N; ++i)
     {
         cout << i << ":" << parent[i] << NEWLINE;
@@ -179,7 +177,6 @@ void Graph::shortest_paths(int source)
     {
         cout << i << ":" << dist[i] << NEWLINE;
     }
-    */
 
     for (int i = 0; i < N; ++i)
     {
@@ -192,31 +189,19 @@ void Graph::shortest_paths(int source)
         }
         cout << "]"
              << ";";
-    }
+    }*/
 
-    /*for (int i = 0; i < N; ++i)
+    for (int i = 0; i < N; ++i)
     {
         int v = i;
-        vector<int> *shortest_path = new vector<int>();
         while (parent[v] != -1)
         {
-            shortest_path->push_back(parent[v]);
+            paths[i].push_back(parent[v]);
             v = parent[v];
         }
-        paths[i] = shortest_path;
     }
 
-    cout << "Shortest Paths:" << endl;
-    for (int i = 0; i < N; i++)
-    {
-
-        cout << i << ":[";
-        for (auto j = paths[i]->begin(); j != paths[i]->end(); ++j)
-        {
-            cout << *j << " ";
-        }
-        cout << "]" << NEWLINE;
-    }*/
+    return paths;
 }
 
 Graph::Graph(int n)

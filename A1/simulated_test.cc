@@ -20,12 +20,44 @@ void printConnectedComponents(vector<int> *cc, int N)
 {
     for (int i = 0; i < N; i++)
     {
+        if (!cc[i].size())
+            continue;
+
         cout << i << ": [";
         for (auto it = cc[i].begin(); it != cc[i].end(); ++it)
         {
             cout << *it << " ";
         }
         cout << "]" << NEWLINE;
+    }
+}
+
+void printShortestPaths(vector<int> *paths, int N)
+{
+    for (int i = 0; i < N; i++)
+    {
+        cout << i << ":[";
+        for (auto j = paths[i].begin(); j != paths[i].end(); ++j)
+        {
+            cout << *j << " ";
+        }
+        cout << "]" << NEWLINE;
+    }
+}
+
+void printOneCycle(vector<int> *path, int N)
+{
+    if (path == NULL)
+    {
+        cout << "Cycle Not Found." << NEWLINE;
+    }
+    else
+    {
+        cout << "Cycle Found:" << NEWLINE;
+        vector<int>::reverse_iterator i;
+        for (i = path->rbegin(); i != path->rend(); ++i)
+            cout << *i << (i == path->rend() - 1 ? "" : " -> ");
+        cout << NEWLINE;
     }
 }
 
@@ -115,10 +147,10 @@ int main()
         printConnectedComponents(graph.connected_components(), N);
         break;
     case 2:
-        graph.one_cycle();
+        printOneCycle(graph.one_cycle(), N);
         break;
     case 3:
-        graph.shortest_paths(0);
+        printShortestPaths(graph.shortest_paths(0), N);
         break;
     default:
         break;
