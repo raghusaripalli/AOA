@@ -38,11 +38,19 @@ int main()
     dLookup = new unordered_map<string, int>();
     vector<int> *users = new vector<int>[USER_N_];
     vector<int> *movies = new vector<int>[MOVIE_N_];
+    vector<int> *user_ratings = new vector<int>[MOVIE_N_];
     vector<int> *dates = new vector<int>[DATE_N_];
     vector<int> *ratings = new vector<int>[DATE_N_];
+    int **min_rating = new int *[MOVIE_N_];
+    for (int i = 0; i < MOVIE_N_; i++)
+    {
+        min_rating[i] = new int[5];
+        for (int j = 0; j < 5; j++)
+            min_rating[i][j] = 0;
+    }
 
     // Load data from all four files
-    read_netflix_data(lookup, rLookup, dLookup, users, movies, dates, ratings);
+    read_netflix_data(lookup, rLookup, dLookup, users, movies, min_rating, user_ratings, dates, ratings);
 
     Graph *g;
     vector<int> *cc;
@@ -53,9 +61,15 @@ int main()
     cc = g->connected_components();
     printCountAndLength(cc, g->N);
 
-    // Build graph based on criteria 1
+    // Build graph based on criteria 2
     g = new Graph(USER_N_);
     graph_criteria_2(dates, ratings, g);
+    cc = g->connected_components();
+    printCountAndLength(cc, g->N);
+
+    // Build graph based on criteria 3
+    g = new Graph(USER_N_);
+    graph_criteria_3(movies, user_ratings, min_rating, g);
     cc = g->connected_components();
     printCountAndLength(cc, g->N);
 

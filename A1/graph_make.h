@@ -10,6 +10,8 @@ void read_netflix_data(
     unordered_map<string, int> *dLookup,
     vector<int> *users,
     vector<int> *movies,
+    int **min_rating,
+    vector<int> *user_ratings,
     vector<int> *dates,
     vector<int> *ratings);
 
@@ -20,5 +22,11 @@ void graph_criteria_1(
 
 void graph_criteria_2(
     vector<int> *dates,
-     vector<int> *ratings,
+    vector<int> *ratings,
+    Graph *g);
+
+void graph_criteria_3(
+    vector<int> *movies, 
+    vector<int> *user_ratings, 
+    int **min_rating, 
     Graph *g);

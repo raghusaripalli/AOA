@@ -13,6 +13,8 @@ void read_netflix_data(
     unordered_map<string, int> *dLookup,
     vector<int> *users,
     vector<int> *movies,
+    int **min_rating,
+    vector<int> *user_ratings,
     vector<int> *dates,
     vector<int> *ratings)
 {
@@ -28,7 +30,7 @@ void read_netflix_data(
         {
             cout << "File Opened" << endl;
             string mid, number, date, rstr;
-            int movie_id = 0, user_id, eid, edid, rating;
+            int movie_id = 0, user_id, eid, edid, rating, ratingIdx;
             while (!input.eof())
             {
                 string line;
@@ -47,6 +49,9 @@ void read_netflix_data(
                 rating = atoi(rstr.c_str());
                 user_id = atoi(number.c_str());
 
+                user_ratings[movie_id].push_back(rating);
+                ratingIdx = rating - 1;
+                min_rating[movie_id][ratingIdx] += 1;
                 // If user_id id not in the lookup table
                 if (lookup->find(user_id) == lookup->end())
                 {
@@ -127,5 +132,41 @@ void graph_criteria_2(vector<int> *dates, vector<int> *ratings, Graph *g)
         }
     }
 
+    cout << "Building Graph Completed" << endl;
+}
+
+void graph_criteria_3(vector<int> *movies, vector<int> *user_ratings, int **min_rating, Graph *g)
+{
+    cout << "Building Graph based on Criteria 3" << endl;
+    for (int i = 0; i < MOVIE_N_; i++)
+    {
+        vector<int> criteria_users;
+        int minCount = INT_MIN;
+        int minRating = -1;
+        for (int j = 0; j < 5; j++)
+        {
+            if (min_rating[i][j] >= minCount)
+            {
+                minCount = min_rating[i][j];
+                minRating = j;
+            }
+        }
+        minRating = 3;
+        int N = user_ratings[i].size();
+        for (int j = 0; j < N; j++)
+        {
+            if (user_ratings[i][j] == minRating)
+            {
+                criteria_users.push_back(movies[i][j]);
+            }
+        }
+
+        int CN = criteria_users.size();
+
+        for (int j = 1; j < CN; j++)
+        {
+            g->addEdge(criteria_users[j], criteria_users[j - 1]);
+        }
+    }
     cout << "Building Graph Completed" << endl;
 }
