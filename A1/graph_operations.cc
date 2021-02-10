@@ -46,7 +46,6 @@ bool Graph::findCycle(bool *visited, int v, int parent, vector<int> *path)
 
 vector<int> *Graph::connected_components()
 {
-    cout << "Connected Components" << NEWLINE;
     // Create visited arr and init it to false
     bool *visited = new bool[N];
     for (int i = 0; i < N; i++)
@@ -72,8 +71,6 @@ vector<int> *Graph::connected_components()
 
 vector<int> *Graph::one_cycle()
 {
-    cout << "One Cycle" << NEWLINE;
-
     // Create visited set
     bool *visited = new bool[N];
     for (int i = 0; i < N; i++)
@@ -107,8 +104,6 @@ vector<int> *Graph::one_cycle()
 
 vector<int> *Graph::shortest_paths(int source)
 {
-    cout << "Shortest Paths" << endl;
-
     // DS to hold paths, parent and distances
     int dist[N];
     int parent[N];

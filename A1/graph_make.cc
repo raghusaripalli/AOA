@@ -8,29 +8,56 @@
 // 52 - 5
 
 void read_netflix_data(
-    unordered_map<int, int> *lookup,
-    unordered_map<int, int> *rLookup,
-    unordered_map<string, int> *dLookup,
     vector<int> *users,
     vector<int> *movies,
-    int **min_rating,
-    vector<int> *user_ratings,
     vector<int> *dates,
     vector<int> *ratings)
 {
+    cout << "Started reading data from files" << endl;
+
+    // Lookup maps
+    unordered_map<int, int> *lookup, *rLookup, *movieIDYearLookup;
+    unordered_map<string, int> *dLookup;
+
+    lookup = new unordered_map<int, int>();
+    rLookup = new unordered_map<int, int>();
+    movieIDYearLookup = new unordered_map<int, int>();
+    dLookup = new unordered_map<string, int>();
+
+    // Read from movie_titles.csv
+    string movieCSVPath = "data/movie_titles.csv";
+    ifstream movieTitle(movieCSVPath);
+    if (movieTitle.is_open())
+    {
+        cout << TAB << movieCSVPath << endl;
+        string movieIdStr, yearStr, delimiter = ",";
+        int movieId, year, pos;
+        while (!movieTitle.eof())
+        {
+            string line;
+            getline(movieTitle, line);
+            pos = line.find(delimiter);
+            movieIdStr = line.substr(0, pos);
+            movieId = atoi(movieIdStr.c_str());
+            yearStr = line.substr(pos + 1, 4);
+            year = atoi(yearStr.c_str());
+            movieIDYearLookup->insert({movieId, year});
+        }
+        movieTitle.close();
+    }
+
     // paths of the input files
     string arr[] = {"data/ratings_data_1.txt", "data/ratings_data_2.txt", "data/ratings_data_3.txt", "data/ratings_data_4.txt"};
     int id = 0, date_id = 0;
     for (int k = 0; k < 4; k++)
     {
-        cout << arr[k] << endl;
+        cout << TAB << arr[k] << endl;
         ifstream input(arr[k]); // opening the kth input file
         string delimiter = ",", movie_delim = ":";
         if (input.is_open())
         {
-            cout << "File Opened" << endl;
-            string mid, number, date, rstr;
-            int movie_id = 0, user_id, eid, edid, rating, ratingIdx;
+            string mid, number, date, rstr, yearStr;
+            int movie_id = 0, user_id, eid, edid, rating, year;
             while (!input.eof())
             {
                 string line;
@@ -45,27 +72,27 @@ void read_netflix_data(
                 }
                 number = line.substr(0, line.find(delimiter));
                 date = line.substr(line.size() - 10);
+                yearStr = date.substr(0, 4);
+                year = atoi(yearStr.c_str());
                 rstr = line.substr(line.size() - 12, 1);
                 rating = atoi(rstr.c_str());
                 user_id = atoi(number.c_str());
-
-                user_ratings[movie_id].push_back(rating);
-                ratingIdx = rating - 1;
-                min_rating[movie_id][ratingIdx] += 1;
                 // If user_id id not in the lookup table
                 if (lookup->find(user_id) == lookup->end())
                 {
                     lookup->insert({user_id, id});
                     rLookup->insert({id, user_id});
                     users[id].push_back(movie_id);
-                    movies[movie_id].push_back(id);
+                    if (movieIDYearLookup->at(movie_id) == year + 1)
+                        movies[movie_id].push_back(id);
                     ++id;
                 }
                 else
                 {
                     eid = lookup->at(user_id);
                     users[eid].push_back(movie_id);
-                    movies[movie_id].push_back(eid);
+                    if (movieIDYearLookup->at(movie_id) == year + 1)
+                        movies[movie_id].push_back(eid);
                 }
 
                 if (dLookup->find(date) == dLookup->end())
@@ -82,20 +109,26 @@ void read_netflix_data(
                     ratings[edid].push_back(rating);
                 }
             }
+
+            // close the input file
             input.close();
-            cout << "File Closed" << endl;
         }
     }
     cout << "Data Reading Completed." << NEWLINE << endl;
+
+    // free the memory used by lookups
+    delete lookup;
+    delete dLookup;
+    delete rLookup;
+    delete movieIDYearLookup;
 }
 
 // Movie Critics - Users who rated atleast 1000 movies
 void graph_criteria_1(
     vector<int> *users,
-    vector<int> *movies,
     Graph *g)
 {
-    cout << "Building Graph based on Criteria 1" << endl;
+    cout << "Creating graph based on 1st Criteria" << endl;
 
     vector<int> criteria_users;
 
@@ -114,14 +147,25 @@ void graph_criteria_1(
             g->addEdge(criteria_users[i], criteria_users[j]);
         }
     }
+}
 
-    cout << "Building Graph Completed" << endl;
+void graph_criteria_2(vector<int> *movies, Graph *g)
+{
+    cout << "Creating graph based on 2nd Criteria" << endl;
+    for (int i = 0; i < MOVIE_N_; i++)
+    {
+        int N = movies[i].size();
+        for (int j = 1; j < N; j++)
+        {
+            g->addEdge(movies[i][j], movies[i][j - 1]);
+        }
+    }
 }
 
 // Movie Buddies - connecting users who rated movies on same date and ratings == RATINGS_N_
-void graph_criteria_2(vector<int> *dates, vector<int> *ratings, Graph *g)
+void graph_criteria_3(vector<int> *dates, vector<int> *ratings, Graph *g)
 {
-    cout << "Building Graph based on Criteria 2" << endl;
+    cout << "Creating graph based on 3rd Criteria" << endl;
     for (int i = 0; i < DATE_N_; i++)
     {
         int ND = dates[i].size();
@@ -131,42 +175,4 @@ void graph_criteria_2(vector<int> *dates, vector<int> *ratings, Graph *g)
                 g->addEdge(dates[i][j], dates[i][j - 1]);
         }
     }
-
-    cout << "Building Graph Completed" << endl;
-}
-
-void graph_criteria_3(vector<int> *movies, vector<int> *user_ratings, int **min_rating, Graph *g)
-{
-    cout << "Building Graph based on Criteria 3" << endl;
-    for (int i = 0; i < MOVIE_N_; i++)
-    {
-        vector<int> criteria_users;
-        int minCount = INT_MIN;
-        int minRating = -1;
-        for (int j = 0; j < 5; j++)
-        {
-            if (min_rating[i][j] >= minCount)
-            {
-                minCount = min_rating[i][j];
-                minRating = j;
-            }
-        }
-        minRating = 3;
-        int N = user_ratings[i].size();
-        for (int j = 0; j < N; j++)
-        {
-            if (user_ratings[i][j] == minRating)
-            {
-                criteria_users.push_back(movies[i][j]);
-            }
-        }
-
-        int CN = criteria_users.size();
-
-        for (int j = 1; j < CN; j++)
-        {
-            g->addEdge(criteria_users[j], criteria_users[j - 1]);
-        }
-    }
-    cout << "Building Graph Completed" << endl;
 }

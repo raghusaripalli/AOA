@@ -31,45 +31,33 @@ int main()
     freopen(fileName.c_str(), "w", stdout);
 
     // Data structures to hold netflix data
-    unordered_map<int, int> *lookup, *rLookup;
-    unordered_map<string, int> *dLookup;
-    lookup = new unordered_map<int, int>();
-    rLookup = new unordered_map<int, int>();
-    dLookup = new unordered_map<string, int>();
+
     vector<int> *users = new vector<int>[USER_N_];
     vector<int> *movies = new vector<int>[MOVIE_N_];
-    vector<int> *user_ratings = new vector<int>[MOVIE_N_];
     vector<int> *dates = new vector<int>[DATE_N_];
     vector<int> *ratings = new vector<int>[DATE_N_];
-    int **min_rating = new int *[MOVIE_N_];
-    for (int i = 0; i < MOVIE_N_; i++)
-    {
-        min_rating[i] = new int[5];
-        for (int j = 0; j < 5; j++)
-            min_rating[i][j] = 0;
-    }
 
     // Load data from all four files
-    read_netflix_data(lookup, rLookup, dLookup, users, movies, min_rating, user_ratings, dates, ratings);
+    read_netflix_data(users, movies, dates, ratings);
 
     Graph *g;
     vector<int> *cc;
 
     // Build graph based on criteria 1
     g = new Graph(USER_N_);
-    graph_criteria_1(users, movies, g);
+    graph_criteria_1(users, g);
     cc = g->connected_components();
     printCountAndLength(cc, g->N);
 
     // Build graph based on criteria 2
     g = new Graph(USER_N_);
-    graph_criteria_2(dates, ratings, g);
+    graph_criteria_2(movies, g);
     cc = g->connected_components();
     printCountAndLength(cc, g->N);
 
     // Build graph based on criteria 3
     g = new Graph(USER_N_);
-    graph_criteria_3(movies, user_ratings, min_rating, g);
+    graph_criteria_3(dates, ratings, g);
     cc = g->connected_components();
     printCountAndLength(cc, g->N);
 
