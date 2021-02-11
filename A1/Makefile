@@ -1,4 +1,4 @@
-CC = g++ -O2 -Wall "-Wl,--stack=1073741824" -Wno-deprecated
+CC = g++ -O2 -Wall -Wno-deprecated
 
 all: simulated_test real_test
 
@@ -29,7 +29,3 @@ real_test.o: real_test.cc
 clean: 
 	rm -f *.o
 	rm -f *.exe
-
-clean_win:
-	del *.o
-	del *.exe

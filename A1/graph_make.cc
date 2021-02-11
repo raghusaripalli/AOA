@@ -3,6 +3,7 @@
 #define RATING_N_ 1
 
 void read_netflix_data(
+    char* data_path,
     vector<int> *users,
     vector<int> *movies,
     vector<int> *dates,
@@ -17,9 +18,10 @@ void read_netflix_data(
     rLookup = new unordered_map<int, int>();
     movieIDYearLookup = new unordered_map<int, int>();
     dLookup = new unordered_map<string, int>();
-
+    // convert data_path to string
+    string path = data_path;
     // Read from movie_titles.csv
-    string movieCSVPath = "data/movie_titles.csv";
+    string movieCSVPath = path + "movie_titles.csv";
     ifstream movieTitle(movieCSVPath);
     if (movieTitle.is_open())
     {
@@ -41,12 +43,13 @@ void read_netflix_data(
     }
 
     // paths of the input files
-    string arr[] = {"data/ratings_data_1.txt", "data/ratings_data_2.txt", "data/ratings_data_3.txt", "data/ratings_data_4.txt"};
+    string arr[] = {"ratings_data_1.txt", "ratings_data_2.txt", "ratings_data_3.txt", "ratings_data_4.txt"};
     int id = 0, date_id = 0;
     for (int k = 0; k < 4; k++)
     {
-        cout << TAB << arr[k] << endl;
-        ifstream input(arr[k]); // opening the kth input file
+        string fPath = path + arr[k];
+        cout << TAB << fPath << endl;
+        ifstream input(fPath); // opening the kth input file
         string delimiter = ",", movie_delim = ":";
         if (input.is_open())
         {

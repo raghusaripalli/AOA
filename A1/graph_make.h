@@ -5,6 +5,7 @@
 #define DATE_N_ 2182
 
 void read_netflix_data(
+    char* data_path,
     vector<int> *users,
     vector<int> *movies,
     vector<int> *dates,

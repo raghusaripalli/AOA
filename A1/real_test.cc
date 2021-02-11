@@ -21,8 +21,16 @@ void printCountAndLength(vector<int> *cc, int N)
     cout << endl;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+
+    if (argc != 2)
+    {
+        cerr << "Couldn't start program due to insufficient command line arguments" << endl;
+        cerr << "Usage Example:\n > ./real_test /home/cise/tmp/netflix_data/" << endl;
+        return -1;
+    }
+
     // Output filepath
     string fileName = "output/real_test_output.txt";
     cout << "Output is written to the file: " << fileName << endl;
@@ -42,7 +50,7 @@ int main()
     vector<int> *ratings = new vector<int>[DATE_N_];
 
     // Load data from all four files
-    read_netflix_data(users, movies, dates, ratings);
+    read_netflix_data(argv[1], users, movies, dates, ratings);
 
     Graph *g;
     vector<int> *cc;
