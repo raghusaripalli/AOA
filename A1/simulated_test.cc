@@ -1,20 +1,5 @@
 #include "graph_operations.h"
-
-clock_t t;
-
-// Helper Methods
-
-void start_time()
-{
-    t = clock();
-}
-
-void end_and_display_time(string stage)
-{
-    t = clock() - t;
-    double time_taken = ((double)t) / CLOCKS_PER_SEC;
-    cout << stage << " took " << time_taken << " secs." << NEWLINE;
-}
+#include "measure_time.h"
 
 void printConnectedComponents(vector<int> *cc, int N)
 {

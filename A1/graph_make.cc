@@ -1,11 +1,6 @@
 #include "graph_make.h"
+#include "measure_time.h"
 #define RATING_N_ 1
-
-// 9808 - 1
-// 3136 - 2
-// 62 - 3
-// 20 - 4
-// 52 - 5
 
 void read_netflix_data(
     vector<int> *users,
@@ -13,8 +8,7 @@ void read_netflix_data(
     vector<int> *dates,
     vector<int> *ratings)
 {
-    cout << "Started reading data from files" << endl;
-
+    start_time();
     // Lookup maps
     unordered_map<int, int> *lookup, *rLookup, *movieIDYearLookup;
     unordered_map<string, int> *dLookup;
@@ -114,13 +108,14 @@ void read_netflix_data(
             input.close();
         }
     }
-    cout << "Data Reading Completed." << NEWLINE << endl;
 
     // free the memory used by lookups
     delete lookup;
     delete dLookup;
     delete rLookup;
     delete movieIDYearLookup;
+
+    end_and_display_time("Reading and parsing netflix data");
 }
 
 // Movie Critics - Users who rated atleast 1000 movies
@@ -128,8 +123,7 @@ void graph_criteria_1(
     vector<int> *users,
     Graph *g)
 {
-    cout << "Creating graph based on 1st Criteria" << endl;
-
+    start_time();
     vector<int> criteria_users;
 
     int N = 1000;
@@ -147,11 +141,12 @@ void graph_criteria_1(
             g->addEdge(criteria_users[i], criteria_users[j]);
         }
     }
+    end_and_display_time("Creating graph based on 1st Criteria");
 }
 
 void graph_criteria_2(vector<int> *movies, Graph *g)
 {
-    cout << "Creating graph based on 2nd Criteria" << endl;
+    start_time();
     for (int i = 0; i < MOVIE_N_; i++)
     {
         int N = movies[i].size();
@@ -160,12 +155,13 @@ void graph_criteria_2(vector<int> *movies, Graph *g)
             g->addEdge(movies[i][j], movies[i][j - 1]);
         }
     }
+    end_and_display_time("Creating graph based on 2nd Criteria");
 }
 
 // Movie Buddies - connecting users who rated movies on same date and ratings == RATINGS_N_
 void graph_criteria_3(vector<int> *dates, vector<int> *ratings, Graph *g)
 {
-    cout << "Creating graph based on 3rd Criteria" << endl;
+    start_time();
     for (int i = 0; i < DATE_N_; i++)
     {
         int ND = dates[i].size();
@@ -175,4 +171,5 @@ void graph_criteria_3(vector<int> *dates, vector<int> *ratings, Graph *g)
                 g->addEdge(dates[i][j], dates[i][j - 1]);
         }
     }
+    end_and_display_time("Creating graph based on 3rd Criteria");
 }

@@ -1,17 +1,22 @@
-Started reading data from files
 	data/movie_titles.csv
 	data/ratings_data_1.txt
 	data/ratings_data_2.txt
 	data/ratings_data_3.txt
 	data/ratings_data_4.txt
-Data Reading Completed.
+Reading and parsing netflix data took 72.039 secs.
 
-Creating graph based on 1st Criteria
+Creating graph based on 1st Criteria took 1.81 secs.
+
+Connected components Algorithm execution took 0.153 secs.
+
 No of connected components: 1
 Size of connected components:
 1:13141
 
-Creating graph based on 2nd Criteria
+Creating graph based on 2nd Criteria took 0 secs.
+
+Connected components Algorithm execution took 0.021 secs.
+
 No of connected components: 11
 Size of connected components:
 1:573
@@ -26,7 +31,10 @@ Size of connected components:
 10:2
 11:4
 
-Creating graph based on 3rd Criteria
+Creating graph based on 3rd Criteria took 0.153 secs.
+
+Connected components Algorithm execution took 0.033 secs.
+
 No of connected components: 9808
 Size of connected components:
 1:176733

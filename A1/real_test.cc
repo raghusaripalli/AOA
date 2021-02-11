@@ -1,4 +1,5 @@
 #include "graph_make.h"
+#include "measure_time.h"
 
 // Helper Methods
 void printCountAndLength(vector<int> *cc, int N)
@@ -22,12 +23,15 @@ void printCountAndLength(vector<int> *cc, int N)
 
 int main()
 {
+    // Output filepath
+    string fileName = "output/real_test_output.txt";
+    cout << "Output is written to the file: " << fileName << endl;
+
     // Fast IO
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
     // redirect stdout to file
-    string fileName = "output/real_test_output.txt";
     freopen(fileName.c_str(), "w", stdout);
 
     // Data structures to hold netflix data
@@ -46,19 +50,25 @@ int main()
     // Build graph based on criteria 1
     g = new Graph(USER_N_);
     graph_criteria_1(users, g);
+    start_time();
     cc = g->connected_components();
+    end_and_display_time("Connected components Algorithm execution");
     printCountAndLength(cc, g->N);
 
     // Build graph based on criteria 2
     g = new Graph(USER_N_);
     graph_criteria_2(movies, g);
+    start_time();
     cc = g->connected_components();
+    end_and_display_time("Connected components Algorithm execution");
     printCountAndLength(cc, g->N);
 
     // Build graph based on criteria 3
     g = new Graph(USER_N_);
     graph_criteria_3(dates, ratings, g);
+    start_time();
     cc = g->connected_components();
+    end_and_display_time("Connected components Algorithm execution");
     printCountAndLength(cc, g->N);
 
     return 0;
