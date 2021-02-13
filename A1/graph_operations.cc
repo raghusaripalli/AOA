@@ -161,31 +161,7 @@ vector<int> *Graph::shortest_paths(int source)
         }
     }
 
-    /*cout << "Parent" << endl;
-    for (int i = 0; i < N; ++i)
-    {
-        cout << i << ":" << parent[i] << NEWLINE;
-    }
-
-    cout << "Distance" << endl;
-    for (int i = 0; i < N; ++i)
-    {
-        cout << i << ":" << dist[i] << NEWLINE;
-    }
-
-    for (int i = 0; i < N; ++i)
-    {
-        int v = i;
-        cout << i << ": [";
-        while (parent[v] != -1)
-        {
-            cout << parent[v] << " ";
-            v = parent[v];
-        }
-        cout << "]"
-             << ";";
-    }*/
-
+    // We iterate through each node, and traverse through the shortest path to the source node.
     for (int i = 0; i < N; ++i)
     {
         int v = i;
