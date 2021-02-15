@@ -3,11 +3,11 @@
 	data/ratings_data_2.txt
 	data/ratings_data_3.txt
 	data/ratings_data_4.txt
-Reading and parsing netflix data took 72.02 secs.
+Reading and parsing netflix data took 83.687 secs.
 
-Creating graph based on 1st Criteria took 1.752 secs.
+Creating graph based on 1st Criteria took 2.818 secs.
 
-Connected components Algorithm execution took 0.16 secs.
+Connected components Algorithm execution took 0.178 secs.
 
 No of connected components: 1
 Size of connected components:
@@ -15,7 +15,7 @@ Size of connected components:
 
 Creating graph based on 2nd Criteria took 0 secs.
 
-Connected components Algorithm execution took 0.016 secs.
+Connected components Algorithm execution took 0.027 secs.
 
 No of connected components: 11
 Size of connected components:
@@ -31,9 +31,9 @@ Size of connected components:
 10:2
 11:4
 
-Creating graph based on 3rd Criteria took 0.152 secs.
+Creating graph based on 3rd Criteria took 135.3 secs.
 
-Connected components Algorithm execution took 0.04 secs.
+Connected components Algorithm execution took 2.9 secs.
 
 No of connected components: 9808
 Size of connected components:

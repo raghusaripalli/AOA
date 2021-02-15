@@ -2,8 +2,11 @@
 #include "measure_time.h"
 #define RATING_N_ 1
 
+/*
+    Read User and Movie Data from the netflix data provided
+*/
 void read_netflix_data(
-    char* data_path,
+    char *data_path,
     vector<int> *users,
     vector<int> *movies,
     vector<int> *dates,
@@ -121,7 +124,9 @@ void read_netflix_data(
     end_and_display_time("Reading and parsing netflix data");
 }
 
-// 1. Film Buffs: Users who rated more than 1000 movies from 1999 to 2005.
+/*
+ 1. Film Buffs: Users who rated more than 1000 movies from 1999 to 2005.
+ */
 void graph_criteria_1(
     vector<int> *users,
     Graph *g)
@@ -147,7 +152,9 @@ void graph_criteria_1(
     end_and_display_time("Creating graph based on 1st Criteria");
 }
 
-// 2. Late Watchers: Users who rated movie exactly the next year after the release.
+/*
+ 2. Late Watchers: Users who rated movie exactly the next year after the release.
+ */
 void graph_criteria_2(vector<int> *movies, Graph *g)
 {
     start_time();
@@ -162,7 +169,9 @@ void graph_criteria_2(vector<int> *movies, Graph *g)
     end_and_display_time("Creating graph based on 2nd Criteria");
 }
 
-// 3. Movie Critics: Users who rated movies on the same date and gave a rating of ‘1.0’ to the respective movie.
+/*
+ 3. Movie Critics: Users who rated movies on the same date and gave a rating of ‘1.0’ to the respective movie.
+*/
 void graph_criteria_3(vector<int> *dates, vector<int> *ratings, Graph *g)
 {
     start_time();

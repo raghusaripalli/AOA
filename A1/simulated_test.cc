@@ -1,6 +1,7 @@
-#include "graph_operations.h"
+#include "graph_simulator.h"
 #include "measure_time.h"
 
+// Methods to print out the paths returned by algorithms in graph_operations.cc
 void printConnectedComponents(vector<int> *cc, int N)
 {
     for (int i = 0; i < N; i++)
@@ -46,28 +47,10 @@ void printOneCycle(vector<int> *path, int N)
     }
 }
 
-// adj Simulation Methods
-
-void nCycle(Graph g)
-{
-    for (int i = 1; i < g.N; i++)
-    {
-        g.addEdge(i, i - 1);
-    }
-    g.addEdge(0, g.N - 1);
-}
-
-void completeGraph(Graph g)
-{
-    for (int i = 0; i < g.N; i++)
-    {
-        for (int j = i + 1; j < g.N; j++)
-        {
-            g.addEdge(i, j);
-        }
-    }
-}
-
+/*
+ the main function for generating simulated data and running the operations on it. 
+ Output from graph operations can be written into a separate file at "output/simulated_test_output.txt"
+*/
 int main()
 {
     // User Input
@@ -105,21 +88,22 @@ int main()
 
     start_time();
     // Initialize graph DS
-    Graph graph(N);
+    Graph graph = NULL;
 
     // Add edges acc to criteria
     switch (graphChoice)
     {
     case 1:
-        nCycle(graph);
+        graph = nCycle(N);
         break;
     case 2:
-        completeGraph(graph);
+        graph = completeGraph(N);
         break;
     case 3:
+        graph = emptyGraph(N);
         break;
     default:
-        nCycle(graph);
+        graph = nCycle(N);
         break;
     }
     end_and_display_time("Graph Simulation");
