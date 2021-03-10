@@ -124,7 +124,7 @@ public class Skyline {
             long endTime = System.nanoTime();
             double duration = (endTime - startTime);
             duration /= 1000000;
-            System.out.printf("For N = %d:\n\tExecution time is %f secs\n\tOutput:%s\n\n", i, duration, result);
+            System.out.printf("For N = %d:\n\tExecution time is %f milliseconds\n\tOutput:%s\n\n", i, duration, result);
         }
     }
 }
