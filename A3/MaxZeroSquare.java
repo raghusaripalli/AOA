@@ -1,10 +1,14 @@
 import java.util.Random;
 
+/**
+ * To find the largest square sub matrix of 0's in a matrix of size M x N
+ */
 public class MaxZeroSquare {
     private final static Random random = new Random(System.nanoTime());
     private final static Runtime runtime = Runtime.getRuntime();
 
-    private void solve(int[][] matrix) {
+    // Algorithm
+    private int[] solve(int[][] matrix) {
         int m = matrix.length;
         int n = matrix[0].length;
         int res = 0;
@@ -46,6 +50,14 @@ public class MaxZeroSquare {
             }
         }
 
+        return new int[]{res, matrix_row_start, matrix_col_start};
+    }
+
+    // Prints the largest square sub matrix of zeros
+    private void printMatrix(int[][] matrix, int[] arr) {
+        int res = arr[0];
+        int matrix_row_start = arr[1];
+        int matrix_col_start = arr[2];
         System.out.println("Size of Maximum size square sub-matrix is: " + res);
 
         if (res > 0) {
@@ -56,9 +68,12 @@ public class MaxZeroSquare {
                 }
                 System.out.println();
             }
+
+
         }
     }
 
+    // Helper methods generates random matrix of size m x n
     private int[][] generateMatrix(int m, int n) {
         int[][] matrix = new int[m][n];
         for (int i = 0; i < m; i++) {
@@ -69,33 +84,27 @@ public class MaxZeroSquare {
         return matrix;
     }
 
-
+    // Main function
     public static void main(String[] args) {
         MaxZeroSquare maxZeroSquare = new MaxZeroSquare();
-        /*
-        maxZeroSquare.solve(new int[][]{{0, 0}, {0, 0}});                                     // 2
-        maxZeroSquare.solve(new int[][]{{0}});                                               // 1
-        maxZeroSquare.solve(new int[][]{{1}});                                               // 0
-        maxZeroSquare.solve(new int[][]{{1, 1}, {1, 1}});                                    // 0
-        maxZeroSquare.solve(new int[][]{{0, 0, 0}, {0, 1, 1}, {0, 1, 1}});                    // 1
-        maxZeroSquare.solve(new int[][]{{1, 1, 1}, {1, 0, 1}, {1, 1, 1}});                    // 1
-        maxZeroSquare.solve(new int[][]{{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});                    // 0
-        maxZeroSquare.solve(new int[][]{{0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}}); // 3
-        maxZeroSquare.solve(new int[][]{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}); // 4
-        */
 
+        // Sample Case
+        int[][] m = new int[][]{{0}};
+        maxZeroSquare.printMatrix(m, maxZeroSquare.solve(m));
+
+        // Provided Test Cases
         int[][] testCases = new int[][]{{10, 10}, {10, 100}, {10, 1000}, {100, 1000}, {1000, 1000}};
-
         for (int[] testCase : testCases) {
+            System.gc();
             int[][] matrix = maxZeroSquare.generateMatrix(testCase[0], testCase[1]);
 
             long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
             long startTime = System.nanoTime();
 
-            maxZeroSquare.solve(matrix);
-
-            long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
+            maxZeroSquare.printMatrix(matrix, maxZeroSquare.solve(matrix));
             long endTime = System.nanoTime();
+            long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
+
 
             double duration = (endTime - startTime);
             duration /= 1000000;
