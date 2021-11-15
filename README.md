@@ -1,15 +1,20 @@
-# COT5405 - Analysis of Algorithms
+## COT5405 - Analysis of Algorithms
 
-
-## Members:
+----
+### Members:
 
 Raghuveer Sharma Saripalli (UFID: 50946752)
 
 Akshay Ganapathy (UFID: 36846922)
 
+-----
+### Project 1: Netflix Data Analysis (C++, Graph Algorithms)
 
-## Assignments:
+Translated 100 million rating data taken from 480,000 anonymous Netflix customers over 17 thousand movie titles into graphs and connected users based on 5 different criteria to provide accurate movie recommendations
 
-Go to the any of the below mentioned folders to get detailed explination and instructions on how to run the same
 
-Assignment 1 - Folder [A1](https://github.com/raghusaripalli/AOA/tree/main/A1) in this repository
+### Project 2: Skyline Shilloute (Java, Divide and Conquer, Heap)
+
+
+### Project 3: Maximum Square with Zeros (Java, Memorization, Dynamic Programming)
+
